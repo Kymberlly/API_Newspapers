@@ -1,16 +1,9 @@
-const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
 const circulationRepo = require('./repos/circulationRepo');
 const data = require('./circulation.json');
 
-const url = "mongodb://localhost:27017";
-const dbName = 'circulation';
-
 async function main() {
-    const client = new MongoClient(url);
-
     try {
-        await client.connect();
         const results = await circulationRepo.loadData(data);
         assert.strictEqual(data.length, results.insertedCount);
 
@@ -65,11 +58,7 @@ async function main() {
 
     }
     catch (error) {
-        console.log(`Erro ao conectar no banco de dados. Erro: ${error.message}`);
-    }
-    finally {
-        await client.db(dbName).dropDatabase();
-        client.close();
+        console.log(`Ocorreu um erro: ${error.message}`);
     }
 }
 
