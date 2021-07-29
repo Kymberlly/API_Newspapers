@@ -2,24 +2,14 @@ const { ObjectId } = require('mongodb');
 const databaseConn = require('../models/db/configuracao');
 
 const funcsRepo = {
-    loadData(data) {
-        return new Promise(async (resolve, reject) => {
-            try {
-                const { conn, db } = await databaseConn();
-                results = await db.collection('newspapers').insertMany(data);
-                resolve(results);
-                conn.close();
-            }
-            catch (error) {
-                reject(error);
-            }
-        });
-    },
     get(query = {}, limit) {
         return new Promise(async (resolve, reject) => {
             try {
                 const { conn, db } = await databaseConn();
                 let items = await db.collection('newspapers').find(query);
+
+                if(limit !== undefined && !Number.isInteger(limit))
+                    reject({message: 'Valor do limit deve ser um inteiro.'})
 
                 if (limit > 0)
                     items = items.limit(limit);
