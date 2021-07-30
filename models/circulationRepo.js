@@ -1,20 +1,35 @@
 const { ObjectId } = require('mongodb');
-const databaseConn = require('../models/db/configuracao');
+const databaseConn = require('./db/configuracao');
 
-const funcsRepo = {
+module.exports = {
+    loadData(data) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const { conn, db } = await databaseConn();
+                const results = await db.collection('newspapers').insertMany(data);
+
+                resolve(results.insertedCount);
+                conn.close();
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
+    },
     get(query = {}, limit) {
         return new Promise(async (resolve, reject) => {
             try {
                 const { conn, db } = await databaseConn();
                 let items = await db.collection('newspapers').find(query);
 
-                if(limit !== undefined && !Number.isInteger(limit))
-                    reject({message: 'Valor do limit deve ser um inteiro.'})
+                if (limit !== undefined && !Number.isInteger(limit))
+                    reject({ message: 'Valor do limit deve ser um inteiro.' })
 
                 if (limit > 0)
                     items = items.limit(limit);
 
-                resolve(await items.toArray())
+                const totReg = await items.toArray()
+                resolve({ total_records: totReg.length, registers: totReg })
                 conn.close();
             }
             catch (error) {
@@ -39,7 +54,7 @@ const funcsRepo = {
     add(newItem) {
         return new Promise(async (resolve, reject) => {
             try {
-                const {conn, db} = await databaseConn();
+                const { conn, db } = await databaseConn();
                 const addedItem = await db.collection('newspapers').insertOne(newItem);
 
                 resolve(addedItem.insertedId);
@@ -53,7 +68,7 @@ const funcsRepo = {
     update(id, newItem) {
         return new Promise(async (resolve, reject) => {
             try {
-                const {conn, db} = await databaseConn();
+                const { conn, db } = await databaseConn();
                 const updatedItem = await db.collection('newspapers').findOneAndReplace({ _id: ObjectId(id) }, newItem);
 
                 resolve(updatedItem.value)
@@ -67,7 +82,7 @@ const funcsRepo = {
     remove(id) {
         return new Promise(async (resolve, reject) => {
             try {
-                const {conn, db} = await databaseConn();
+                const { conn, db } = await databaseConn();
                 const removeItem = await db.collection('newspapers').deleteOne({ _id: ObjectId(id) });
 
                 resolve(removeItem.deletedCount === 1);
@@ -81,7 +96,7 @@ const funcsRepo = {
     averageFinalists() {
         return new Promise(async (resolve, reject) => {
             try {
-                const {conn, db} = await databaseConn();
+                const { conn, db } = await databaseConn();
 
                 const average = await db.collection('newspapers')
                     .aggregate([{
@@ -103,7 +118,7 @@ const funcsRepo = {
     averageFinalistsByChange() {
         return new Promise(async (resolve, reject) => {
             try {
-                const {conn, db} = await databaseConn();
+                const { conn, db } = await databaseConn();
 
                 const average = await db.collection('newspapers')
                     .aggregate([
@@ -138,7 +153,19 @@ const funcsRepo = {
                 reject(error);
             }
         })
+    },
+    clearDatabase() {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const { conn, db } = await databaseConn();
+                const clearItems = await db.collection('newspapers').deleteMany({});
+
+                resolve(clearItems.deletedCount);
+                conn.close()
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
     }
 };
-
-module.exports = funcsRepo
