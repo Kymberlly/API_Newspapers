@@ -1,11 +1,13 @@
 const express = require('express');
 const router = require('./controllers/newspapers');
+const errosHandler = require('./errors/errorsHandler');
 
 app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/newspapers', router);
+app.use(errosHandler)
 
 app.listen(3000, () => console.log('Servidor rodando na porta 3000'));
 
@@ -15,19 +17,6 @@ app.listen(3000, () => console.log('Servidor rodando na porta 3000'));
 //         const id = getData[4]._id.toString();
 //         const byId = await circulationRepo.getById(id);
 //         assert.deepStrictEqual(getData[4], byId);
-
-//         const newItem = {
-//             "Newspaper": "Globo News do Brasil",
-//             "Daily Circulation, 2004": 1,
-//             "Daily Circulation, 2013": 7,
-//             "Change in Daily Circulation, 2004-2013": 150,
-//             "Pulitzer Prize Winners and Finalists, 1990-2003": 1,
-//             "Pulitzer Prize Winners and Finalists, 2004-2014": 10,
-//             "Pulitzer Prize Winners and Finalists, 1990-2014": 0
-//         };
-
-//         const idInsertedItem = await circulationRepo.add(newItem);
-//         assert(idInsertedItem);
 
 //         const newItemUpdated = {
 //             "Newspaper": "TESTE Globo News do Brasil",
