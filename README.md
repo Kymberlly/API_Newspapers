@@ -2,10 +2,12 @@
 
 Aperfeiçoamento de projeto desenvolvido durante o curso de Node.js + MongoDB realizado na PuralSight.
 
-Durante o curso foi desenvolvido uma API para teste das funções mais básicas do banco de dados, porém sem chamadas por endpoints.
+Durante o curso foi desenvolvido uma API para a realização do CRUD de Newspapers utilizando o MongoDB. 
+
+O aperfeiçoamento do código consiste na separação de cada responsabilidade utilizando o modelo MVC, na implementação da chamada dos métodos utilizando endpoints através do Express e na utilização do Docker. 
 
 
-### Gerarando a imagem Docker do projeto localmente
+### Gerando a imagem Docker do projeto localmente
 O arquivo Dockerfile possui todas as configurações necessárias para que seja realizado o build da aplicação.
 
 
