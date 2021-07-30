@@ -1,0 +1,19 @@
+version: "3.8"
+services:
+    application:
+        image: nodemongo:1.0.0
+        command: node app.js
+        ports:
+            - "3000:3000"
+        networks:
+            - nova-rede
+        depends_on:
+            - mongo
+    mongo:
+        image: "mongo:latest"
+        networks:
+            - nova-rede
+
+networks:
+    nova-rede:
+        driver: bridge
