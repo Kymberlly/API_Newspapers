@@ -1,17 +1,16 @@
+require('dotenv/config')
 const { MongoClient } = require('mongodb');
 
-const url = "mongodb://mongo:27017";
-const dbName = 'circulation';
+module.exports = new Promise(async (resolve, reject) => {
+    const client = new MongoClient(process.env.URL);
 
-module.exports = async () => {
     try{
-        const client = new MongoClient(url);
-        const conn = await client.connect();
-        const db = client.db(dbName);
-
-        return {conn, db};
+        await client.connect()
+        const db = client.db(process.env.DATABASE);
+        resolve(db);
     }
     catch(error){
-        console.log(`Erro ao realizar a conexão. Erro: ${error}`);
+        reject(`Erro ao realizar a conexão. Erro: ${error}`);
+        client.close();
     }
-}
+});
